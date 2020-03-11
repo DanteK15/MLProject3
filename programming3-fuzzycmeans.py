@@ -12,16 +12,16 @@ def l2NormNoSqrt(a, b):
 
 
 k = 3
-r = 10
+r = 1
 m = 2
-data = np.genfromtxt("Programming 3/cluster_dataset.txt", delimiter="  ")
+data = np.genfromtxt("cluster_dataset.txt", delimiter="  ")
 rowCount = data.shape[0]
 columnCount = data.shape[1]
 maxRand = np.amax(data)
 minRand = np.amin(data)
 
-sse = float("inf")
 for i in range(r):
+    sse = float("inf")
     # generate random intial membership grades
     memGrades = np.zeros((rowCount, k))
     for i in range(rowCount):
@@ -30,14 +30,15 @@ for i in range(r):
         rowSum = sum(memGrades[i])
         memGrades[i] = memGrades[i] / rowSum
 
-    for j in range(1):
+    improving = True
+    while improving:
         # example he gave
         """
         data = np.array([[1, 2], [0, -1]])
         rowCount = 2
         memGrades = np.array([[0.4, 0.6], [0.7, 0.3]])
         k = 2
-        m = 1
+        m = 2
         """
 
         # calculate new centroids
@@ -55,8 +56,11 @@ for i in range(r):
         # print(memGrades)
 
         # calculate sse
-        sse = 0
+        sseTotal = 0
         for i in range(rowCount):
             for j in range(k):
-                sse += (memGrades[i][j] ** m) * l2NormNoSqrt(data[i], centroids[j])
-        # print(sse)
+                sseTotal += (memGrades[i][j] ** m) * l2NormNoSqrt(data[i], centroids[j])
+        if sse - sseTotal < 0.1 and not(sse == float("inf")):
+            improving = False
+        sse = sseTotal
+        print(sseTotal)
