@@ -2,8 +2,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import copy
 
-k = 6
-r = 10
+k = 10
+r = 5
 data = np.genfromtxt("cluster_dataset.txt", delimiter="  ")
 rowCount = data.shape[0]
 columnCount = data.shape[1]
@@ -71,9 +71,9 @@ for i in range(r):
     if tempSum < sse:
         # sse
         sse = tempSum
-
         finalIterations = copy.deepcopy(iterations)
 
+print(sse)
 # print best iteration group
 for i in range(len(finalIterations)):
     for j in range(k):

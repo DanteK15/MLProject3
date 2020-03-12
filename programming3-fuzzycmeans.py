@@ -13,12 +13,10 @@ def l2NormNoSqrt(a, b):
 
 k = 6
 r = 10
-m = 2
+m = 1.1
 data = np.genfromtxt("cluster_dataset.txt", delimiter="  ")
 rowCount = data.shape[0]
 columnCount = data.shape[1]
-maxRand = np.amax(data)
-minRand = np.amin(data)
 
 finalSSE = float("inf")
 finalIterations = []
@@ -28,25 +26,16 @@ for i in range(r):
     memGrades = np.zeros((rowCount, k))
     for i in range(rowCount):
         for j in range(k):
-            memGrades[i][j] = np.random.uniform(1, 10)
+            memGrades[i][j] = np.random.uniform(0, 1)
         rowSum = sum(memGrades[i])
         memGrades[i] = memGrades[i] / rowSum
 
     iterations = []
     improving = True
     while improving:
-        # example he gave
-        """
-        data = np.array([[1, 2], [0, -1]])
-        rowCount = 2
-        memGrades = np.array([[0.4, 0.6], [0.7, 0.3]])
-        k = 2
-        m = 2
-        """
         # calculate new centroids
         centroids = np.sum(data * np.transpose((memGrades ** m))[:, :, None], axis=1) / np.sum(np.transpose(memGrades) ** m, axis=1)[:, np.newaxis]
 
-        # print(centroids)
         # calculate new membership grades
         for i in range(rowCount):
             for j in range(k):
@@ -55,7 +44,6 @@ for i in range(r):
                 for l in range(k):
                     totalSum += (numerator / l2Norm(data[i], centroids[l])) ** (2 / (m - 1))
                 memGrades[i][j] = 1 / totalSum
-        # print(memGrades)
 
         # calculate sse
         sseTotal = 0
@@ -77,10 +65,10 @@ for i in range(r):
         # print(sseTotal)
 
     if finalSSE > sse:
-        print("yay changed")
         finalSSE = sse
         finalIterations = copy.deepcopy(iterations)
 
+print(finalSSE)
 # print best iteration group
 for i in range(len(finalIterations)):
     for j in range(k):
